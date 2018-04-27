@@ -31,26 +31,41 @@ public class EventManager implements SipListener {
         }.start();
     }
 
-    public void call() {
-        new Thread() {
+    public Thread call(final String callee) {
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
-                    sipRequest = userAgent.invite(config.getDefaultCallee(), null);
+                    sipRequest = userAgent.invite("sip:" + callee + "@" + config.getDomain(), null);
                 }catch (SipUriSyntaxException e){
                     e.printStackTrace();
                 }
             }
-        }.start();
+        };
+        thread.start();
+        return thread;
+    }
+
+    public Thread call() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sipRequest = userAgent.invite("sip:" + config.getDefaultCallee() + "@" + config.getDomain(), null);
+                }catch (SipUriSyntaxException e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
+        return thread;
     }
 
     public void hangup() {
-        new Thread() {
-            @Override
-            public void run() {
-                userAgent.terminate(sipRequest);
-            }
-        }.start();
+        Thread thread = new Thread(()->{
+            userAgent.terminate(sipRequest);
+        });
+        thread.start();
     }
 
     public void registering(SipRequest sipRequest) {
@@ -70,14 +85,20 @@ public class EventManager implements SipListener {
     }
 
     public void remoteHangup(SipRequest sipRequest) {
+        System.out.println("HANGUP!!!");
+        this.call();
 
     }
 
     public void ringing(SipResponse sipResponse) {
-
     }
 
     public void calleePickup(SipResponse sipResponse) {
+        System.out.println("PICKUP!!!");
+        this.hangup();
+        System.out.println("HANGING CALLING");
+        this.call();
+        System.out.println("AFTER call");
 
     }
 

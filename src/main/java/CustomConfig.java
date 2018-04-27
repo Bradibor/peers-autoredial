@@ -30,6 +30,7 @@ public class CustomConfig implements Config {
         this.userPart = userPart;
         this.domain = domain;
         this.password = password;
+        this.mediaMode = MediaMode.captureAndPlayback;
     }
 
     public InetAddress getLocalInetAddress() {
