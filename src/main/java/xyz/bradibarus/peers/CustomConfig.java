@@ -1,3 +1,5 @@
+package xyz.bradibarus.peers;
+
 import net.sourceforge.peers.Config;
 import net.sourceforge.peers.media.MediaMode;
 import net.sourceforge.peers.sip.syntaxencoding.SipURI;
